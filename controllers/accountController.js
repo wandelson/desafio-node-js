@@ -9,7 +9,7 @@ exports.authenticate = function (req, resp) {
     User.findOne({
         username: req.body.username,
         password: md5(req.body.password + global.SALT_KEY)
-    },
+    },///
         function (error, user) {
             if (error) {
                 resp.status(500).json(error);
