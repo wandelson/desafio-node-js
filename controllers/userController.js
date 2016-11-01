@@ -50,11 +50,21 @@ exports.singup = function (req, res) {
                 ultimo_login: user.ultimo_login,
                 token: user.token,
                 senha: user.senha,
-                telefones:  user.telefones
+                telefones: user.telefones
             });
         });
 
     });
+};
+
+
+exports.ping = function (req, resp) {
+
+    resp.status(200).json({
+
+        message: "PING"
+    });
+
 };
 
 

@@ -17,8 +17,9 @@ exports.authorize = function (req, res, next) {
 
    var bearer = req.headers.authorization;
 
-   var token = bearer.replace('Bearer','').trim();
-
+   if(bearer){
+    var token = bearer.replace('Bearer','').trim();
+   }
     //var token = req.body.token || req.query.token || req.headers['x-access-token'] || req.headers.autorization.replace('Bearer','').trim();
 
     if (!token) {
