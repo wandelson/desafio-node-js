@@ -3,32 +3,44 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var userSchema = new Schema({
-    name: {
-        type: String,
-        required: true,
+    "data_criacao": {
+        type: Date,
+        required: true
     },
-    image: {
-        type: String,
-        required: true,
-        default: 'assets/img/no-image.jpg'
+    "data_atualizacao": {
+        type: Date
     },
-    username: {
+    "ultimo_login": {
+        type: Date
+    },
+    "nome": {
         type: String,
         required: true,
         trim: true,
-        index: {
-            unique: true
-        },
     },
-    password: {
+    "token": {
+        type: String,
+        required: true,
+    },
+    "senha": {
         type: String,
         required: true
     },
-    admin: {
-        type: Boolean,
-        required: true,
-        default: false
+    "email": {
+        type: String,
+        required: true
     },
+    "telefones": [
+        {
+            ddd: {
+                type: String,
+                required: true,
+            },
+            numero: {
+                type: String,
+                required: true,
+            }
+        }]
 });
 
 var user = mongoose.model('user', userSchema);

@@ -2,106 +2,117 @@ var User = require('../models/user').User;
 
 var md5 = require('MD5');
 
+var auth = require('../security/auth');
 
-exports.create = function (req, res) {
-    var user = new User();
-    user.name = req.body.name;
-    user.username = req.body.username;
-    user.password = md5(req.body.password + global.SALT_KEY);
 
-    user.save(function (error) {
+exports.singup = function (req, res) {
+
+    User.findOne({ email: req.body.email }, function (error, exists) {
         if (error) {
             res.status(500).json(error);
             return;
         }
-
-        res.status(201).json({
-            name: user.name,
-            username: user.username,
-            image: user.image
-        });
-    });
-}
-
-
-exports.get = function (req, res) {
-    User.find({}, function (error, result) {
-        if (error) {
-            res.status(500).json(error);
-            return;
-        }
-        res.status(200).json(result);
-    });
-
-};
-
-
-exports.getById = function (req, res) {
-    var id = req.params.id;
-
-    User.findOne({ _id: id }, function (error, result) {
-        if (error) {
-            res.status(500).json(error);
-            return;
-        }
-        res.status(200).json(result);
-    });
-
-};
-
-
-exports.update = function (req, res) {
-
-    var id = req.params.id;
-
-    User.findById(id, function (error, user) {
-        if (error) {
-            res.status(500).json(error);
-            return;
+        else {
+            if (exists != null) {
+                res.status(500).json(
+                    {
+                        mensagem: "E-mail já existente"
+                    }
+                );
+                return;
+            }
         }
 
-        if (!user) {
-            res.status(404).json({
-                message: "Usuário não encontrado"
-            });
-            return;
-        }
 
-        user.name = req.body.name;
-        user.image = req.body.image;
+        var user = new User();
+        user.nome = req.body.nome;
+        user.email = req.body.email;
+        user.senha = md5(req.body.senha + global.SALT_KEY);
+        user.telefones = req.telefones;
+        user.data_criacao = new Date().toJSON();
+        user.data_atualizacao = new Date().toJSON();
+        user.ultimo_login = user.data_criacao;
+        user.telefones = req.body.telefones;
+        user.token = auth.signIn(user);
 
         user.save(function (error) {
-
             if (error) {
                 res.status(500).json(error);
                 return;
             }
 
-            res.status(200).json({
-                message: "Usuário alterado com sucesso!"
+            res.status(201).json({
+                id: user._id,
+                nome: user.nome,
+                email: user.email,
+                data_criacao: user.data_criacao,
+                data_atualizacao: user.data_atualizacao,
+                ultimo_login: user.ultimo_login,
+                token: user.token,
+                senha: user.senha,
+                telefones:  user.telefones
             });
-
         });
 
-
     });
+};
+
+
+
+exports.signin = function (req, resp) {
+
+    User.findOne({
+        email: req.body.email,
+        senha: md5(req.body.senha + global.SALT_KEY)
+    },
+        function (error, user) {
+            if (error) {
+                resp.status(500).json(error);
+                return;
+            }
+
+            if (!user) {
+                resp.status(401).json({
+                    message: "Usuário ou senha inválidos!"
+                });
+
+                return;
+            }
+
+            var token = auth.signIn(user);
+
+            resp.status(200).json({
+                user: {
+                    id: user._id,
+                    nome: user.nome,
+                    email: user.email,
+                    data_criacao: user.data_criacao,
+                    data_atualizacao: user.data_atualizacao,
+                    ultimo_login: user.ultimo_login,
+                    token: user.token,
+                    senha: user.senha
+                }
+            });
+
+
+        });
 
 };
 
 
 
-exports.remove = function (req, res) {
+
+
+exports.getById = function (req, res) {
+
     var id = req.params.id;
 
-    User.remove({ _id: id }, function (error, result) {
+    User.find({ _id: id }, function (error, result) {
         if (error) {
             res.status(500).json(error);
             return;
         }
-         res.status(200).json({
-                message: "Usuário excluído com sucesso!"
-        });
-
+        res.status(200).json(result);
     });
 
 };

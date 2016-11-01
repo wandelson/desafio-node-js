@@ -1,8 +1,11 @@
 var jwt = require('jsonwebtoken');
 
+var moment = require('moment');
+
 exports.signIn = function (user) {
     return jwt.sign({
-        username: user.username, admin: user.admin
+        email: user.email,
+        nome: user.nome
     }, global.SALT_KEY, {
             expiresIn: 1440 //expira em 24 horas
         }
@@ -11,11 +14,16 @@ exports.signIn = function (user) {
 
 
 exports.authorize = function (req, res, next) {
-    var token = req.body.token || req.query.token || req.headers['x-access-token'];
+
+   var bearer = req.headers.authorization;
+
+   var token = bearer.replace('Bearer','').trim();
+
+    //var token = req.body.token || req.query.token || req.headers['x-access-token'] || req.headers.autorization.replace('Bearer','').trim();
 
     if (!token) {
         res.status(401).json({
-            message: 'Token Inválido'
+            message: 'Não autorizado.'
         });
     }
     else {
@@ -23,11 +31,16 @@ exports.authorize = function (req, res, next) {
 
             if (error) {
                 res.status(401).json({
-                    message: "Token inválido"
+                    message: "Não autorizado"
                 });
             }
             else {
-                next();
+
+             var ultimo_login =  decoded.nome;
+
+             var diff = moment().diff(moment(ultimo_login), 'minutes');
+
+             next();
             }
 
         });
@@ -35,37 +48,3 @@ exports.authorize = function (req, res, next) {
 
 };
 
-exports.isAdmin = function (req, res, next) {
-
-    var token = req.body.token || req.query.token || req.headers['x-access-token'];
-
-    if (!token) {
-        res.status(401).json({
-            message: 'Token Inválido'
-        });
-    }
-    else {
-        jwt.verify(token, global.SALT_KEY, function (error, decoded) {
-
-            if (error) {
-                res.status(401).json({
-                    message: "Token inválido"
-                });
-            }
-            else {
-
-                if (decoded.admin) {
-                    next();
-                }
-                else {
-                    res.status(401).json({
-                        message: 'Você não tem permissão para essa funcionalidade'
-                    });
-                }
-
-            }
-
-        });
-    }
-
-};
