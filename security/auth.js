@@ -5,9 +5,9 @@ var moment = require('moment');
 exports.signIn = function (user) {
     return jwt.sign({
         email: user.email,
-        nome: user.nome
+        ultimo_login: user.ultimo_login
     }, global.SALT_KEY, {
-            expiresIn: 1440 //expira em 24 horas
+            //  expiresIn: 1440 //expira em 24 horas
         }
     );
 };
@@ -15,11 +15,11 @@ exports.signIn = function (user) {
 
 exports.authorize = function (req, res, next) {
 
-   var bearer = req.headers.authorization;
+    var bearer = req.headers.authorization;
 
-   if(bearer){
-    var token = bearer.replace('Bearer','').trim();
-   }
+    if (bearer) {
+        var token = bearer.replace('Bearer', '').trim();
+    }
     //var token = req.body.token || req.query.token || req.headers['x-access-token'] || req.headers.autorization.replace('Bearer','').trim();
 
     if (!token) {
@@ -36,12 +36,17 @@ exports.authorize = function (req, res, next) {
                 });
             }
             else {
+                var diff = moment().diff(moment(decoded.ultimo_login), 'minutes');
 
-             var ultimo_login =  decoded.nome;
+                if (diff > 30) {
+                    res.status(401).json({
+                        message: "Sessão inválida"
+                    });
+                }
+                else {
+                    next();
+                }
 
-             var diff = moment().diff(moment(ultimo_login), 'minutes');
-
-             next();
             }
 
         });

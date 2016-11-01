@@ -68,7 +68,6 @@ exports.ping = function (req, resp) {
 };
 
 
-
 exports.signin = function (req, resp) {
 
     User.findOne({
@@ -88,6 +87,11 @@ exports.signin = function (req, resp) {
 
                 return;
             }
+
+          
+            user.ultimo_login =  new Date().toJSON();
+
+            user.save();
 
             var token = auth.signIn(user);
 

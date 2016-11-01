@@ -2,7 +2,7 @@
   "name": "usrmgr",
   "version": "1.0.0",
   "description": "Gestão de Usuários",
-  "main": "\bin\\www.js",
+  "main": "./server",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

@@ -6,12 +6,12 @@ var router = express.Router();
 
 var auth = require('..//security/auth')
 
-//router.get('/users/:id' ,auth.authorize, userController.getById);
+router.get('/users/:id' ,auth.authorize, userController.getById);
 
 router.post('/signin',userController.signin);
 
 router.post('/singup',userController.singup);
 
-router.get('/users/ping',userController.ping);
+router.get('/ping',userController.ping);
 
 module.exports = router;
