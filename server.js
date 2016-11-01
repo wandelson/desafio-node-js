@@ -11,7 +11,7 @@ var port = process.env.PORT || 8000; // first change
 
 var server = http.createServer(app);
 
-//mongoose.connect(config.connectionString);
+mongoose.connect(config.connectionString);
 
 app.use(bodyParser.json());
 
