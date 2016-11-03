@@ -21,7 +21,7 @@
     "mocha": "^2.4.5"
   },
   "scripts": {
-    "start": "SET NODE_ENV=Development && node server.js",
+    "start": "SET NODE_ENV=development && node server.js",
     "test": "mocha --timeout 10000"
   }
 }
