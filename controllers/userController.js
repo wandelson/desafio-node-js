@@ -2,7 +2,7 @@ var User = require('../models/user').User;
 
 var md5 = require('MD5');
 
-var config = require('config');
+var config = require('../config/config.js');
 
 var auth = require('../security/auth');
 
@@ -29,7 +29,7 @@ exports.singup = function (req, res) {
         var user = new User();
         user.nome = req.body.nome;
         user.email = req.body.email;
-        user.senha = md5(req.body.senha + config.SALT_KEY);
+        user.senha = md5(req.body.senha + config.global.SaltKey);
         user.telefones = req.telefones;
         user.data_criacao = new Date().toJSON();
         user.data_atualizacao = new Date().toJSON();
@@ -74,7 +74,7 @@ exports.signin = function (req, resp) {
 
     User.findOne({
         email: req.body.email,
-        senha: md5(req.body.senha + config.SALT_KEY)
+        senha: md5(req.body.senha + config.SaltKey)
     },
         function (error, user) {
             if (error) {
