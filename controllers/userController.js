@@ -29,7 +29,7 @@ exports.singup = function (req, res) {
         var user = new User();
         user.nome = req.body.nome;
         user.email = req.body.email;
-        user.senha = md5(req.body.senha + config.global.SaltKey);
+        user.senha = md5(req.body.senha + global.SaltKey);
         user.telefones = req.telefones;
         user.data_criacao = new Date().toJSON();
         user.data_atualizacao = new Date().toJSON();
@@ -74,7 +74,7 @@ exports.signin = function (req, resp) {
 
     User.findOne({
         email: req.body.email,
-        senha: md5(req.body.senha + config.SaltKey)
+        senha: md5(req.body.senha + global.SaltKey)
     },
         function (error, user) {
             if (error) {

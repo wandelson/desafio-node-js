@@ -9,7 +9,7 @@ exports.signIn = function (user) {
     return jwt.sign({
         email: user.email,
         ultimo_login: user.ultimo_login
-    }, config.SaltKey);
+    }, global.SaltKey);
 };
 
 
@@ -26,7 +26,7 @@ exports.authorize = function (req, res, next) {
         });
     }
     else {
-        jwt.verify(token, config.SaltKey, function (error, decoded) {
+        jwt.verify(token, global.SaltKey, function (error, decoded) {
 
             if (error) {
                 res.status(401).json({
