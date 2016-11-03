@@ -11,10 +11,15 @@
     "jsonwebtoken": "^7.1.9",
     "md5": "^2.2.1",
     "moment": "^2.15.2",
-    "mongoose": "^4.6.5",
+    "mongoose": "^4.6.5"
+  },
+  "devDependencies": {
     "chai": "^3.5.0",
     "chai-http": "^2.0.1",
     "mocha": "^2.4.5"
+  },
+  "scripts": {
+    "start": "SET NODE_ENV=development && node server.js",
+    "test": "mocha --timeout 10000"
   }
-
 }
