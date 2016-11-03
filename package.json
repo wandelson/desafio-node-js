@@ -16,7 +16,5 @@
     "chai-http": "^2.0.1",
     "mocha": "^2.4.5"
   }
-  /* "scripts": {
-    "test": "mocha --timeout 10000"
-  }*/
+
 }
