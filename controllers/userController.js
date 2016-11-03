@@ -1,3 +1,4 @@
+
 var User = require('../models/user').User;
 
 var md5 = require('MD5');
@@ -123,7 +124,7 @@ exports.getById = function (req, res) {
 
     var id = req.params.id;
 
-    User.find({ _id: id }, function (error, result) {
+    User.find({ _id : id }, function (error, result) {
         if (error) {
             res.status(500).json(error);
             return;
