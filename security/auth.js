@@ -2,11 +2,14 @@ var jwt = require('jsonwebtoken');
 
 var moment = require('moment');
 
+var config = require('config');
+
+
 exports.signIn = function (user) {
     return jwt.sign({
         email: user.email,
         ultimo_login: user.ultimo_login
-    }, global.SALT_KEY, {
+    }, config.SALT_KEY, {
             //  expiresIn: 1440 //expira em 24 horas
         }
     );
@@ -28,7 +31,7 @@ exports.authorize = function (req, res, next) {
         });
     }
     else {
-        jwt.verify(token, global.SALT_KEY, function (error, decoded) {
+        jwt.verify(token, config.SALT_KEY, function (error, decoded) {
 
             if (error) {
                 res.status(401).json({

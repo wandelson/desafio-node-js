@@ -1,27 +1,41 @@
 var express = require('express');
 var bodyParser = require('body-parser');
-var mongoose =  require('mongoose');
-var config = require('./config/config');
-var routes = require('./routes/routes')
-var http = require('http');
+var mongoose = require('mongoose');
+var config = require('config');
 
+var http = require('http');
+let morgan = require('morgan');
+var routes = require('./routes/routes')
+var port = 8000;
 var app = express();
 
-var port = process.env.PORT || 8000; // first change
+let options = {
+    server: { socketOptions: { keepAlive: 1, connectTimeoutMS: 30000 } },
+    replset: { socketOptions: { keepAlive: 1, connectTimeoutMS: 30000 } }
+};
 
-var server = http.createServer(app);
+mongoose.connect(config.DBHost, options);
+let db = mongoose.connection;
+db.on('error', console.error.bind(console, 'connection error:'));
 
-mongoose.connect(config.connectionString);
+
+if (config.util.getEnv('NODE_ENV') !== 'test') {
+
+    app.use(morgan('combined'));
+}
+
 
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.text());
+app.use(bodyParser.json({ type: 'application/json' }));
+app.use('/api', routes);
 
-app.use(bodyParser.urlencoded({
-    extended:false
-}));
 
-app.use('/api',routes);
+app.get("/", (req, res) => res.json({ message: "Welcome to our REST API!" }));
 
-server.listen(port, function(){
+
+app.listen(port, function () {
     console.log('Server up and runnning on port ' + port);
 });
 
