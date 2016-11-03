@@ -1,5 +1,5 @@
 {
-  "name": "App",
+  "name": "dasdsa",
   "version": "1.0.0",
   "description": "Gestão de Usuários",
   "main": "./server",
@@ -20,7 +20,6 @@
     "mocha": "^2.4.5"
   },
   "scripts": {
-    "start": "SET NODE_ENV=development && node server.js",
     "test": "mocha --timeout 10000"
   }
 }
